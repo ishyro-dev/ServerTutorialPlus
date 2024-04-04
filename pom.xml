@@ -9,16 +9,31 @@
     <version>1.25.1</version>
   
     <repositories>
+        <repository>
+            <id>json-simple</id>
+            <url>https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple</url>
+        </repository>
         <!-- Spigot.MC repo -->
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
+        <!-- ProtocolLib repo -->
+        <repository>
+            <id>dmulloy2-repo</id>
+            <url>https://repo.dmulloy2.net/repository/public/</url>
+        </repository>
 
-        <!-- PlaceHolderApi repo -->
+        <!-- PlaceholderAPI repo-->
         <repository>
             <id>placeholderapi</id>
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+        </repository>
+
+        <!-- Euphoria repo -->
+        <repository>
+            <id>hubland</id>
+            <url>https://repo.hubland.gg/repository/hubland/</url>
         </repository>
 
         <repository>
@@ -30,8 +45,38 @@
         <!--Spigot API and NMS-->
         <dependency>
             <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.16.5-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
-            <version>1.20.2-R0.1-SNAPSHOT</version>
+            <version>1.16.5-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- ProtocolLib API -->
+        <dependency>
+            <groupId>com.comphenix.protocol</groupId>
+            <artifactId>ProtocolLib</artifactId>
+            <version>4.8.0</version>
+        </dependency>
+
+        <!-- PlaceholderAPI API-->
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.11.5</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Euphoria API -->
+        <dependency>
+            <groupId>gg.hubland</groupId>
+            <artifactId>euphoria-spigot</artifactId>
+            <version>1.0</version>
             <scope>provided</scope>
         </dependency>
 
@@ -56,6 +101,15 @@
             <artifactId>HikariCP</artifactId>
             <version>3.4.5</version>
         </dependency>
+
+        <!-- JsonSimple -->
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1.1</version>
+            <scope>provided</scope>
+        </dependency>
+
 
         <!-- Version support -->
         <dependency>

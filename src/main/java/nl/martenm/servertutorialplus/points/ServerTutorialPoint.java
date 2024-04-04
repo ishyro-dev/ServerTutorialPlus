@@ -1,17 +1,18 @@
 package nl.martenm.servertutorialplus.points;
 
 import com.cryptomorin.xseries.messages.Titles;
+import me.clip.placeholderapi.PlaceholderAPI;
 import nl.martenm.servertutorialplus.ServerTutorialPlus;
 import nl.martenm.servertutorialplus.helpers.Config;
+import nl.martenm.servertutorialplus.helpers.NeedsReflection;
 import nl.martenm.servertutorialplus.helpers.PluginUtils;
 import nl.martenm.servertutorialplus.helpers.dataholders.FireWorkInfo;
 import nl.martenm.servertutorialplus.helpers.dataholders.OldValuesPlayer;
 import nl.martenm.servertutorialplus.helpers.dataholders.PlayerSound;
 import nl.martenm.servertutorialplus.helpers.dataholders.PlayerTitle;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import nl.martenm.servertutorialplus.points.editor.PointArg;
 import nl.martenm.servertutorialplus.points.editor.args.*;
+import nl.martenm.servertutorialplus.util.ActionBar;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -19,6 +20,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -33,6 +35,7 @@ import java.util.List;
  * @since 22-11-2017.
  */
 public abstract class ServerTutorialPoint{
+
 
     protected ServerTutorialPlus plugin;
     protected PointType type;
@@ -151,11 +154,13 @@ public abstract class ServerTutorialPoint{
         //endregion
 
         //region actionbar
-        if (message_actionBar != null) {
-            //NeedsReflection.sendActionBar(player, PluginUtils.replaceVariables(plugin.placeholderAPI, player, message_actionBar));
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(PluginUtils.replaceVariables(plugin.placeholderAPI, player, message_actionBar)));
+        if (message_actionBar == null) {
+
+            String msg = "%lang_tutorials.sneak-to-exit%";
+            msg = PlaceholderAPI.setPlaceholders(player, msg);
+            ActionBar.sendActionBar(player, msg);
+
         }
-        //endregion
 
         //region commands
         for (String command : commands) {
@@ -342,6 +347,7 @@ public abstract class ServerTutorialPoint{
 
         return s.substring(0, s.length() - 3);
     }
+
 
     //Getters and setters
     public Location getLoc() {

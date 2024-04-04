@@ -1,5 +1,7 @@
 package nl.martenm.servertutorialplus.objects;
 
+import com.cryptomorin.xseries.messages.Titles;
+import me.clip.placeholderapi.PlaceholderAPI;
 import nl.martenm.servertutorialplus.ServerTutorialPlus;
 import net.md_5.bungee.api.ChatColor;
 import nl.martenm.servertutorialplus.api.events.TutorialEndEvent;
@@ -8,8 +10,10 @@ import nl.martenm.servertutorialplus.helpers.Messages;
 import nl.martenm.servertutorialplus.helpers.PluginUtils;
 import nl.martenm.servertutorialplus.helpers.dataholders.OldValuesPlayer;
 import nl.martenm.servertutorialplus.points.IPlayPoint;
+import nl.martenm.servertutorialplus.util.ActionBar;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
@@ -40,11 +44,10 @@ public class TutorialController {
     /**
     * Starts a tutorial.
      */
-    public void start(){
-        if(serverTutorial.getNeedsPermission()){
-            if(!player.hasPermission("servertutorialplus.tutorials." + serverTutorial.getId())){
+    public void start() {
+        if (serverTutorial.getNeedsPermission()) {
+            if (!player.hasPermission("servertutorialplus.tutorials." + serverTutorial.getId())) {
                 stopController(true);
-
                 player.sendMessage(Messages.noPermissionTutorial(plugin));
                 return;
             }
@@ -53,21 +56,21 @@ public class TutorialController {
         //FIRE event!
         TutorialStartEvent event = new TutorialStartEvent(serverTutorial, player);
         plugin.getServer().getPluginManager().callEvent(event);
-        if(event.isCancelled()){
+        if (event.isCancelled()) {
             plugin.inTutorial.remove(player.getUniqueId());
             plugin.lockedPlayers.remove(player.getUniqueId());
             plugin.lockedViews.remove(player.getUniqueId());
             return;
         }
 
-        if(serverTutorial.points.size() == 0){
+        if (serverTutorial.points.size() == 0) {
             player.sendMessage(ChatColor.RED + "Tutorial cancelled. No points to be played.");
             cancel(true);
             return;
         }
 
         //Hide player from other players.
-        if(serverTutorial.invisiblePlayer){
+        if (serverTutorial.invisiblePlayer) {
             plugin.getServer().getOnlinePlayers().stream().forEach(p -> p.hidePlayer(player));
         }
 
@@ -77,6 +80,7 @@ public class TutorialController {
         playedPoint = serverTutorial.points.get(current).createPlay(player, oldValuesPlayer, this::finishPoint);
         playedPoint.start();
     }
+
 
     /**
     * Cancels / stops the current the tutorial.
@@ -92,6 +96,10 @@ public class TutorialController {
 
         stopController(cancelled);
         restorePlayer(originalLocation);
+        player.removePotionEffect(PotionEffectType.INVISIBILITY);
+        player.removePotionEffect(PotionEffectType.JUMP);
+        ActionBar.sendActionBar(player, "§r");
+        Titles.sendTitle(player, 0, 1, 1, PluginUtils.replaceVariables(plugin.placeholderAPI, player, "§r"), PluginUtils.replaceVariables(plugin.placeholderAPI, player,"§r"));
     }
 
     private void restorePlayer(boolean originalLocation){
@@ -129,6 +137,8 @@ public class TutorialController {
         plugin.inTutorial.remove(player.getUniqueId());
         plugin.lockedPlayers.remove(player.getUniqueId());
         plugin.lockedViews.remove(player.getUniqueId());
+        ActionBar.sendActionBar(player, "§r");
+        Titles.sendTitle(player, 0, 1, 1, PluginUtils.replaceVariables(plugin.placeholderAPI, player, "§r"), PluginUtils.replaceVariables(plugin.placeholderAPI, player,"§r"));
         running = false;
     }
 
@@ -136,6 +146,13 @@ public class TutorialController {
         if(current == serverTutorial.points.size() - 1){
             //Tutorial has been finished!
             finish();
+            player.removePotionEffect(PotionEffectType.INVISIBILITY);
+            ActionBar.sendActionBar(player, "§r");
+            Titles.sendTitle(player, 0, 1, 1, PluginUtils.replaceVariables(plugin.placeholderAPI, player, "§r"), PluginUtils.replaceVariables(plugin.placeholderAPI, player,"§r"));
+            for (Player player1 : Bukkit.getOnlinePlayers()) {
+                if (player1.equals(player)) continue;
+                player1.showPlayer(player);
+            }
         } else{
             current++;
             playedPoint = serverTutorial.points.get(current).createPlay(player, oldValuesPlayer, this::finishPoint);
@@ -225,4 +242,5 @@ public class TutorialController {
     public Integer getCurrentPoint() {
         return current;
     }
+
 }

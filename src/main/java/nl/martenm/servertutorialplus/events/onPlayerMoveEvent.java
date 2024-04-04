@@ -1,6 +1,7 @@
 package nl.martenm.servertutorialplus.events;
 
 import nl.martenm.servertutorialplus.ServerTutorialPlus;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -13,23 +14,28 @@ import org.bukkit.event.player.PlayerMoveEvent;
 public class onPlayerMoveEvent implements Listener {
 
     private ServerTutorialPlus plugin;
-    public onPlayerMoveEvent(ServerTutorialPlus plugin){
+
+    public onPlayerMoveEvent(ServerTutorialPlus plugin) {
         this.plugin = plugin;
     }
 
     @EventHandler
-    public void playerMoveEvent(PlayerMoveEvent event){
-        if(plugin.lockedPlayers.contains(event.getPlayer().getUniqueId())){
-            if(event.getFrom().getX() != event.getTo().getX() || event.getFrom().getY() != event.getTo().getY() || event.getFrom().getZ() != event.getTo().getZ()){
+    public void playerMoveEvent(PlayerMoveEvent event) {
+        if (plugin.lockedPlayers.contains(event.getPlayer().getUniqueId())) {
+            if (event.getFrom().getX() != event.getTo().getX() || event.getFrom().getY() != event.getTo().getY() || event.getFrom().getZ() != event.getTo().getZ()) {
                 //Player moved!
+                Player player = event.getPlayer();
                 event.setCancelled(true);
+                player.teleport(event.getFrom());
+
             }
         }
 
-        if(plugin.lockedViews.contains(event.getPlayer().getUniqueId())){
-            if(event.getFrom().getYaw() != event.getTo().getYaw() || event.getFrom().getPitch() != event.getTo().getPitch()){
-                //Player moved!
-                event.setCancelled(true);
+        if (plugin.lockedViews.contains(event.getPlayer().getUniqueId())) {
+            if (event.getFrom().getYaw() != event.getTo().getYaw() || event.getFrom().getPitch() != event.getTo().getPitch()) {
+                //Player moved camera!
+                Player player = event.getPlayer();
+                player.teleport(event.getFrom());
             }
         }
     }

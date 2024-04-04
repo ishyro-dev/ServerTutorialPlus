@@ -14,7 +14,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
  */
 public class OnPlayerQuitEvent implements Listener {
 
-    private ServerTutorialPlus plugin;
+    private final ServerTutorialPlus plugin;
     public OnPlayerQuitEvent(ServerTutorialPlus plugin){
         this.plugin = plugin;
     }

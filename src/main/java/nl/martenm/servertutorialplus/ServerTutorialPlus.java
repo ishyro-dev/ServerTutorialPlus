@@ -38,10 +38,6 @@ import java.io.File;
 import java.util.*;
 import java.util.logging.Logger;
 
-/**
- * ServerTutorialPlus
- * Created by Marten on 5-3-2017.
- */
 public class ServerTutorialPlus extends JavaPlugin{
 
     public Logger logger;
@@ -203,6 +199,7 @@ public class ServerTutorialPlus extends JavaPlugin{
             pm.registerEvents(new OnPlayerInteractEntityEvent(this), this);
         }
         pm.registerEvents(new OnEntityDeathEvent(this), this);
+        pm.registerEvents(new onPlayerSneakEvent(this), this);
         pm.registerEvents(new OnPlayerJoinEvent(this), this);
         pm.registerEvents(new OnBlockBreakEvent(this), this);
         pm.registerEvents(new onPlayerMoveEvent(this), this);

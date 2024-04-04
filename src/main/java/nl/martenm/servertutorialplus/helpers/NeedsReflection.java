@@ -1,10 +1,14 @@
 package nl.martenm.servertutorialplus.helpers;
 
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Constructor;
+
+import static java.awt.SystemColor.text;
+
 /**
  * Class for reflection for certain methods.
  * Credits to: bramhaag.
@@ -65,25 +69,6 @@ public class NeedsReflection {
         }
     }
 
-    public static void sendActionBar(Player player, String text)
-    {
-        try
-        {
-            String title_text = net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', text);
-
-            Object enumTitle = getNMSClass("PacketPlayOutTitle").getDeclaredClasses()[0].getField("ACTIONBAR").get(null);
-            Object title = getNMSClass("IChatBaseComponent$ChatSerializer").getMethod("a", String.class).invoke(null, "{\"text\": \"" + title_text +"\"}");
-
-            Constructor titleConstuctor = getNMSClass("PacketPlayOutTitle").getConstructor(getNMSClass("PacketPlayOutTitle$EnumTitleAction"), getNMSClass("IChatBaseComponent"));
-            Object packet = titleConstuctor.newInstance(enumTitle, title);
-            sendPacket(player, packet);
-        }
-
-        catch (Exception ex)
-        {
-            ex.printStackTrace();            //Do something
-        }
-    }
 
     private static void sendPacket(Player player, Object packet)
     {

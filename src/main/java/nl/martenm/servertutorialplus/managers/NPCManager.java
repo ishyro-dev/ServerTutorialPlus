@@ -140,10 +140,7 @@ public class NPCManager extends AbstractManager {
 
         // Spawn all entities.
         LivingEntity npc = (LivingEntity) entity_npc;
-        npc.setAI(false);
         npc.setCanPickupItems(false);
-        npc.setGravity(false);
-        npc.setCollidable(false);
 
 
         return createNPC(npc, location, npcId, tutorialId);
@@ -169,21 +166,7 @@ public class NPCManager extends AbstractManager {
         armorStand_1.setCustomName(ChatColor.YELLOW + ChatColor.BOLD.toString() +"Right click!");
         armorStand_2.setCustomName(ChatColor.GREEN +  "Tutorial");
 
-        npc.setInvulnerable(true);
-        armorStand_1.setInvulnerable(true);
-        armorStand_2.setInvulnerable(true);
-
         NPCInfo info = new NPCInfo(plugin, npcId, npc.getUniqueId(), new UUID[] {armorStand_1.getUniqueId(), armorStand_2.getUniqueId()}, tutorialId);
-
-        // Configure heights.
-        double npcHeight = npc.getHeight();
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                armorStand_1.teleport(npc.getLocation().add(0, npcHeight + 0.1, 0));
-                armorStand_2.teleport(npc.getLocation().add(0, npcHeight + 0.35, 0));
-            }
-        }.runTaskLater(plugin, 5);
 
         if (BukkitVersion.getInstance().versionEqualOrLower(1, 10)) {
             keepInPlace(npc.getUniqueId());
