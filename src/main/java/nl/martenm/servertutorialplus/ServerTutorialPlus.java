@@ -207,6 +207,7 @@ public class ServerTutorialPlus extends JavaPlugin{
         pm.registerEvents(new OnPlayerToggleFlight(this), this);
         pm.registerEvents(new OnCommandPreprocessEvent(this), this);
         pm.registerEvents(new ChatEventListener(this), this);
+        pm.registerEvents(new BlockInteractEvent(), this);
     }
 
     public void loadTutorials(){
