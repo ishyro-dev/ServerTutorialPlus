@@ -12,13 +12,17 @@ import nl.martenm.servertutorialplus.helpers.dataholders.OldValuesPlayer;
 import nl.martenm.servertutorialplus.points.IPlayPoint;
 import nl.martenm.servertutorialplus.util.ActionBar;
 import org.bukkit.Bukkit;
+import org.bukkit.Effect;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * The tutorial controller has all the logic to play a ServerTutorial.
- * It contains the main loop for the tutorial and it has methods like start() and cancel().
+ * It contains the main loop for the tutorial and it has methods like start()
+ * and cancel().
+ * 
  * @author MartenM
  * @since 7-3-2017
  */
@@ -34,7 +38,7 @@ public class TutorialController {
 
     private OldValuesPlayer oldValuesPlayer;
 
-    public TutorialController(ServerTutorialPlus plugin, Player player, ServerTutorial serverTutorial){
+    public TutorialController(ServerTutorialPlus plugin, Player player, ServerTutorial serverTutorial) {
         this.plugin = plugin;
         this.player = player;
         this.serverTutorial = serverTutorial;
@@ -42,7 +46,7 @@ public class TutorialController {
     }
 
     /**
-    * Starts a tutorial.
+     * Starts a tutorial.
      */
     public void start() {
         if (serverTutorial.getNeedsPermission()) {
@@ -53,7 +57,7 @@ public class TutorialController {
             }
         }
 
-        //FIRE event!
+        // FIRE event!
         TutorialStartEvent event = new TutorialStartEvent(serverTutorial, player);
         plugin.getServer().getPluginManager().callEvent(event);
         if (event.isCancelled()) {
@@ -69,9 +73,9 @@ public class TutorialController {
             return;
         }
 
-        //Hide player from other players.
+        // Hide player from other players.
         if (serverTutorial.invisiblePlayer) {
-            plugin.getServer().getOnlinePlayers().stream().forEach(p -> p.hidePlayer(player));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 0, false, false));
         }
 
         plugin.inTutorial.put(player.getUniqueId(), this);
@@ -81,10 +85,10 @@ public class TutorialController {
         playedPoint.start();
     }
 
-
     /**
-    * Cancels / stops the current the tutorial.
-    * @param cancelled   -  Identifies if a tutorial was cancelled, or just stopped.
+     * Cancels / stops the current the tutorial.
+     * 
+     * @param cancelled - Identifies if a tutorial was cancelled, or just stopped.
      */
     public void cancel(boolean cancelled) {
         cancel(cancelled, cancelled);
@@ -99,37 +103,38 @@ public class TutorialController {
         player.removePotionEffect(PotionEffectType.INVISIBILITY);
         player.removePotionEffect(PotionEffectType.JUMP);
         ActionBar.sendActionBar(player, "§r");
-        Titles.sendTitle(player, 0, 1, 1, PluginUtils.replaceVariables(plugin.placeholderAPI, player, "§r"), PluginUtils.replaceVariables(plugin.placeholderAPI, player,"§r"));
+        Titles.sendTitle(player, 0, 1, 1, PluginUtils.replaceVariables(plugin.placeholderAPI, player, "§r"),
+                PluginUtils.replaceVariables(plugin.placeholderAPI, player, "§r"));
     }
 
-    private void restorePlayer(boolean originalLocation){
-        if(plugin.enabled) {
+    private void restorePlayer(boolean originalLocation) {
+        if (plugin.enabled) {
             // plugin.getServer().getScheduler().runTask(plugin, () -> {
-                player.setFlySpeed(oldValuesPlayer.getOriginal_flySpeed());
-                player.setWalkSpeed(oldValuesPlayer.getOriginal_walkSpeed());
-                player.setAllowFlight(oldValuesPlayer.isAllowFlight());
-                player.setFlying(oldValuesPlayer.getFlying());
-                player.setGameMode(oldValuesPlayer.getGamemode());
-                if (originalLocation) {
-                    player.teleport(oldValuesPlayer.getLoc());
-                }
+            player.setFlySpeed(oldValuesPlayer.getOriginal_flySpeed());
+            player.setWalkSpeed(oldValuesPlayer.getOriginal_walkSpeed());
+            player.setAllowFlight(oldValuesPlayer.isAllowFlight());
+            player.setFlying(oldValuesPlayer.getFlying());
+            player.setGameMode(oldValuesPlayer.getGamemode());
+            if (originalLocation) {
+                player.teleport(oldValuesPlayer.getLoc());
+            }
             // });
         }
     }
 
-    private void stopController(boolean cancelled){
-        if(cancelled){
-            if(playedPoint != null) {
+    private void stopController(boolean cancelled) {
+        if (cancelled) {
+            if (playedPoint != null) {
                 playedPoint.stop();
             }
         }
 
-        //Show player again
+        // Show player again
         if (serverTutorial.invisiblePlayer && plugin.enabled) {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    plugin.getServer().getOnlinePlayers().stream().forEach(p -> p.showPlayer(player));
+                    player.removePotionEffect(PotionEffectType.INVISIBILITY);
                 }
             }.runTask(plugin);
         }
@@ -138,22 +143,21 @@ public class TutorialController {
         plugin.lockedPlayers.remove(player.getUniqueId());
         plugin.lockedViews.remove(player.getUniqueId());
         ActionBar.sendActionBar(player, "§r");
-        Titles.sendTitle(player, 0, 1, 1, PluginUtils.replaceVariables(plugin.placeholderAPI, player, "§r"), PluginUtils.replaceVariables(plugin.placeholderAPI, player,"§r"));
+        Titles.sendTitle(player, 0, 1, 1, PluginUtils.replaceVariables(plugin.placeholderAPI, player, "§r"),
+                PluginUtils.replaceVariables(plugin.placeholderAPI, player, "§r"));
         running = false;
     }
 
-    private void finishPoint(){
-        if(current == serverTutorial.points.size() - 1){
-            //Tutorial has been finished!
+    private void finishPoint() {
+        if (current == serverTutorial.points.size() - 1) {
+            // Tutorial has been finished!
             finish();
             player.removePotionEffect(PotionEffectType.INVISIBILITY);
             ActionBar.sendActionBar(player, "§r");
-            Titles.sendTitle(player, 0, 1, 1, PluginUtils.replaceVariables(plugin.placeholderAPI, player, "§r"), PluginUtils.replaceVariables(plugin.placeholderAPI, player,"§r"));
-            for (Player player1 : Bukkit.getOnlinePlayers()) {
-                if (player1.equals(player)) continue;
-                player1.showPlayer(player);
-            }
-        } else{
+            Titles.sendTitle(player, 0, 1, 1, PluginUtils.replaceVariables(plugin.placeholderAPI, player, "§r"),
+                    PluginUtils.replaceVariables(plugin.placeholderAPI, player, "§r"));
+            player.removePotionEffect(PotionEffectType.INVISIBILITY);
+        } else {
             current++;
             playedPoint = serverTutorial.points.get(current).createPlay(player, oldValuesPlayer, this::finishPoint);
             playedPoint.start();
@@ -161,26 +165,29 @@ public class TutorialController {
     }
 
     /**
-     * Used to execute code that should only be executed if the tutorial has been fairly completed.
+     * Used to execute code that should only be executed if the tutorial has been
+     * fairly completed.
      */
-    public void finish(){
-        //Cancel tutorial to make everything stop and set back old values.
+    public void finish() {
+        // Cancel tutorial to make everything stop and set back old values.
         cancel(false);
 
-        //Run additional commands for (first) completion
-        new BukkitRunnable(){
+        // Run additional commands for (first) completion
+        new BukkitRunnable() {
             @Override
             public void run() {
-                boolean playedBefore = plugin.getDataSource().hasPlayedTutorial(player.getUniqueId(), serverTutorial.getId());
+                boolean playedBefore = plugin.getDataSource().hasPlayedTutorial(player.getUniqueId(),
+                        serverTutorial.getId());
 
-                if(!playedBefore) {
-                    //HAS NOT PLAYED THIS TUTORIAL BEFORE!
+                if (!playedBefore) {
+                    // HAS NOT PLAYED THIS TUTORIAL BEFORE!
                     // If query is return true (succes) make played before false to give rewards.
-                    playedBefore = !plugin.getDataSource().addPlayedTutorial(player.getUniqueId(), serverTutorial.getId());
+                    playedBefore = !plugin.getDataSource().addPlayedTutorial(player.getUniqueId(),
+                            serverTutorial.getId());
                 }
 
                 final boolean result = playedBefore;
-                new BukkitRunnable(){
+                new BukkitRunnable() {
                     @Override
                     public void run() {
                         giveRewards(result);
@@ -193,50 +200,59 @@ public class TutorialController {
     /**
      * Executes the commands that are used when a tutorial has been finished.
      * Executes as fast as the last point has been played.
+     * 
      * @param playedBefore True if the player does the tutorial for the first time.
      */
-    public void giveRewards(boolean playedBefore){
-        if(!playedBefore) {
+    public void giveRewards(boolean playedBefore) {
+        if (!playedBefore) {
             for (String command : serverTutorial.getRewards()) {
-                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), PluginUtils.replaceVariables(plugin.placeholderAPI, player, command));
+                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),
+                        PluginUtils.replaceVariables(plugin.placeholderAPI, player, command));
             }
         }
     }
 
     /**
-    * Gets the player associated with this TutorialController.
-    * @return Player
+     * Gets the player associated with this TutorialController.
+     * 
+     * @return Player
      */
-    public Player getPlayer(){
+    public Player getPlayer() {
         return this.player;
     }
 
     /**
-    * Gets the old values for a player, used to restore the players state before starting the tutorial.
-    * @return Old values of a player.
+     * Gets the old values for a player, used to restore the players state before
+     * starting the tutorial.
+     * 
+     * @return Old values of a player.
      */
-    public OldValuesPlayer getOldValuesPlayer(){
+    public OldValuesPlayer getOldValuesPlayer() {
         return oldValuesPlayer;
     }
 
     /**
-    * Gets the tutorial this controller is playing.
-    * @return Server Tutorial.
+     * Gets the tutorial this controller is playing.
+     * 
+     * @return Server Tutorial.
      */
-    public ServerTutorial getTutorial(){
+    public ServerTutorial getTutorial() {
         return serverTutorial;
     }
 
     /**
      * Gets whether the tutorial is being played.
-     * @return Boolean that identifies if the tutorial controller is currently running a tutorial.
+     * 
+     * @return Boolean that identifies if the tutorial controller is currently
+     *         running a tutorial.
      */
-    public boolean isRunning(){
+    public boolean isRunning() {
         return this.running;
     }
 
     /**
      * Get which point are beeing playing
+     * 
      * @return Integer that represent point index of the current point
      */
     public Integer getCurrentPoint() {
