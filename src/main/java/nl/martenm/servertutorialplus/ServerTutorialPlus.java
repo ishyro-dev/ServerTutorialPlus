@@ -22,6 +22,7 @@ import nl.martenm.servertutorialplus.points.custom.CommandPoint;
 import nl.martenm.servertutorialplus.points.custom.TimedPoint;
 import nl.martenm.servertutorialplus.reflection.IProtocol;
 import nl.martenm.servertutorialplus.reflection.V1_13.Protocol_1_13_V1;
+import nl.martenm.servertutorialplus.reflection.V1_8.Protocol_1_8;
 import nl.martenm.servertutorialplus.reflection.v1_12.Protocol_1_12;
 import nl.martenm.servertutorialplus.reflection.v1_14.Protocol_1_14_V1;
 import nl.martenm.simplecommands.SimpleCommandMessages;
@@ -383,7 +384,7 @@ public class ServerTutorialPlus extends JavaPlugin{
             case "v1_14_R1":
             case "v1_16_R1":
             default:
-                protocol = new Protocol_1_14_V1();
+                protocol = new Protocol_1_8();
                 break;
         }
 
