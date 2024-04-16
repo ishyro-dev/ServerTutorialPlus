@@ -21,10 +21,7 @@ import nl.martenm.servertutorialplus.points.custom.ClickBlockPoint;
 import nl.martenm.servertutorialplus.points.custom.CommandPoint;
 import nl.martenm.servertutorialplus.points.custom.TimedPoint;
 import nl.martenm.servertutorialplus.reflection.IProtocol;
-import nl.martenm.servertutorialplus.reflection.V1_13.Protocol_1_13_V1;
 import nl.martenm.servertutorialplus.reflection.V1_8.Protocol_1_8;
-import nl.martenm.servertutorialplus.reflection.v1_12.Protocol_1_12;
-import nl.martenm.servertutorialplus.reflection.v1_14.Protocol_1_14_V1;
 import nl.martenm.simplecommands.SimpleCommandMessages;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -197,7 +194,6 @@ public class ServerTutorialPlus extends JavaPlugin{
             pm.registerEvents(new OnPlayerInteractEntityEventV1_8(this), this);
         } else {
             pm.registerEvents(new OnPlayerInteractEvent(this), this);
-            pm.registerEvents(new OnPlayerInteractEntityEvent(this), this);
         }
         pm.registerEvents(new OnEntityDeathEvent(this), this);
         pm.registerEvents(new onPlayerSneakEvent(this), this);
@@ -371,18 +367,6 @@ public class ServerTutorialPlus extends JavaPlugin{
         String formmatedVersion = version.substring(version.lastIndexOf(".") + 1);
 
         switch (formmatedVersion) {
-            case "v1_9_R2":
-            case "1_10_R1":
-            case "1_11_R1":
-            case "v1_12_R1":
-                protocol = new Protocol_1_12();
-                break;
-            case "v1_13_R2":
-            case "v1_13_R1":
-                protocol = new Protocol_1_13_V1();
-                break;
-            case "v1_14_R1":
-            case "v1_16_R1":
             default:
                 protocol = new Protocol_1_8();
                 break;

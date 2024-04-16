@@ -4,7 +4,7 @@ import nl.martenm.servertutorialplus.helpers.Color;
 import nl.martenm.servertutorialplus.reflection.IProtocol;
 import org.bukkit.Effect;
 import org.bukkit.Location;
-import org.bukkit.Particle;
+
 import org.bukkit.entity.Player;
 
     /**
